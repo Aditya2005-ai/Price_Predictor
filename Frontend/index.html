@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PriceSense - Smart E-commerce Price Prediction</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0e27;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(ellipse at center, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+            position: relative;
+            padding: 2rem;
+            margin-top: 80px;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            text-align: center;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff, #667eea);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Auth Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 450px;
+            position: relative;
+            animation: scaleIn 0.3s ease;
+            color: #2d3748;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #718096;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 0.25rem;
+        }
+
+        .auth-tab {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .auth-tab.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Main Dashboard */
+        .dashboard {
+            display: none;
+            padding: 2rem;
+            margin-top: 80px;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .dashboard-header {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .user-info {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Prediction Interface */
+        .prediction-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .prediction-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .prediction-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group select, .form-group input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .form-group select option {
+            background: #1a202c;
+            color: white;
+        }
+
+        .predict-button {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 1.25rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .predict-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+        }
+
+        .predict-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Results Section */
+        .results-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.5s ease;
+        }
+
+        .results-section.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .price-display {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .price-value {
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .price-label {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .analytics-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .analytics-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .analytics-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .analytics-content {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            display: none;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .prediction-container {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .price-value {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+            50% { transform: translateY(-30px) rotate(180deg); opacity: 0.8; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                PriceSense
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="features.html">Features</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="auth-buttons" id="authButtons">
+                <button class="btn btn-outline" onclick="openModal('signin')">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+                <button class="btn btn-primary" onclick="openModal('signup')">
+                    <i class="fas fa-user-plus"></i>
+                    Sign Up
+                </button>
+            </div>
+            <div class="user-menu" id="userMenu" style="display: none;">
+                <span id="userName">Welcome, User</span>
+                <button class="btn btn-outline" onclick="logout()" style="margin-left: 1rem;">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="heroSection">
+        <div class="hero-content">
+            <h1>Smart E-commerce Price Prediction</h1>
+            <p>Leverage AI-powered analytics to predict product prices with unprecedented accuracy. Make informed decisions with real-time market insights and anomaly detection.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="openModal('signup')">
+                    <i class="fas fa-rocket"></i>
+                    Get Started Free
+                </button>
+                <button class="btn btn-outline" onclick="scrollToDemo()">
+                    <i class="fas fa-play"></i>
+                    Watch Demo
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard -->
+    <section class="dashboard" id="dashboard">
+        <div class="dashboard-header">
+            <h2>Price Prediction Dashboard</h2>
+            <div class="user-info" id="userInfo">
+                <p>Welcome back! Ready to analyze product prices with AI?</p>
+            </div>
+        </div>
+
+        <div class="prediction-container">
+            <!-- Product Specifications -->
+            <div class="prediction-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="card-title">Product Specifications</div>
+                </div>
+
+                <form id="predictionForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Product Category</label>
+                            <select id="category" name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="electronics">Electronics</option>
+                                <option value="clothing">Fashion & Apparel</option>
+                                <option value="home">Home & Garden</option>
+                                <option value="sports">Sports & Outdoors</option>
+                                <option value="books">Books & Media</option>
+                                <option value="automotive">Automotive</option>
+                                <option value="health">Health & Beauty</option>
+                                <option value="toys">Toys & Games</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Brand</label>
+                            <select id="brand" name="brand" required>
+                                <option value="">Select Brand</option>
+                                <option value="premium">Premium Brand</option>
+                                <option value="established">Established Brand</option>
+                                <option value="emerging">Emerging Brand</option>
+                                <option value="generic">Generic/Private Label</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Average Rating</label>
+                            <input type="number" id="rating" name="rating" min="1" max="5" step="0.1" placeholder="4.5" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Number of Reviews</label>
+                            <input type="number" id="reviews" name="reviews" min="0" placeholder="1250" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Shipping Method</label>
+                            <select id="shipping" name="shipping">
+                                <option value="standard">Standard Shipping</option>
+                                <option value="express">Express Shipping</option>
+                                <option value="prime">Prime/Premium</option>
+                                <option value="free">Free Shipping</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Seller Rating</label>
+                            <select id="seller" name="seller">
+                                <option value="high">High Rated (4.5+)</option>
+                                <option value="medium">Medium Rated (3.5-4.4)</option>
+                                <option value="low">Low Rated (Below 3.5)</option>
+                                <option value="new">New Seller</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="predict-button" id="predictBtn">
+                        <i class="fas fa-chart-bar"></i>
+                        Predict Price
+                    </button>
+                </form>
+            </div>
+
+            <!-- Market Analysis -->
+            <div class="prediction-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div class="card-title">Market Analysis</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Market Competition</label>
+                        <select id="competition" name="competition">
+                            <option value="low">Low Competition</option>
+                            <option value="medium">Medium Competition</option>
+                            <option value="high">High Competition</option>
+                            <option value="saturated">Saturated Market</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Season/Demand</label>
+                        <select id="demand" name="demand">
+                            <option value="regular">Regular Demand</option>
+                            <option value="seasonal">Seasonal High</option>
+                            <option value="trending">Trending Product</option>
+                            <option value="declining">Declining Demand</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Product Age</label>
+                        <select id="productAge" name="productAge">
+                            <option value="new">New Launch (0-3 months)</option>
+                            <option value="recent">Recent (3-12 months)</option>
+                            <option value="established">Established (1-3 years)</option>
+                            <option value="mature">Mature (3+ years)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Stock Level</label>
+                        <select id="stock" name="stock">
+                            <option value="high">High Stock</option>
+                            <option value="medium">Medium Stock</option>
+                            <option value="low">Low Stock</option>
+                            <option value="limited">Limited Edition</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="loading-spinner" id="loadingSpinner"></div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <div class="price-display">
+                <div class="price-value" id="predictedPrice">$0.00</div>
+                <div class="price-label">Predicted Market Price</div>
+            </div>
+
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <div class="analytics-header">
+                        <div class="analytics-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>AI Analysis</h3>
+                    </div>
+                    <div class="analytics-content" id="aiAnalysis">
+                        Advanced machine learning algorithms analyze multiple market factors...
+                    </div>
+                </div>
+
+                <div class="analytics-card">
+                    <div class="analytics-header">
+                        <div class="analytics-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <h3>Anomaly Detection</h3>
+                    </div>
+                    <div class="analytics-content" id="anomalyDetection">
+                        Real-time monitoring for unusual pricing patterns and market shifts...
+                    </div>
+                </div>
+
+                <div class="analytics-card">
+                    <div class="analytics-header">
+                        <div class="analytics-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h3>Recommendations</h3>
+                    </div>
+                    <div class="analytics-content" id="recommendations">
+                        Strategic pricing recommendations based on market analysis...
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-value" id="confidence">0%</div>
+                    <div class="stat-label">Confidence Score</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="marketPosition">-</div>
+                    <div class="stat-label">Market Position</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="priceRange">-</div>
+                    <div class="stat-label">Price Range</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="competitiveIndex">-</div>
+                    <div class="stat-label">Competitive Index</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Auth Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchTab('signin')">Sign In</button>
+                <button class="auth-tab" onclick="switchTab('signup')">Sign Up</button>
+            </div>
+
+            <!-- Sign In Form -->
+            <form class="auth-form active" id="signinForm">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="signinEmail" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="signinPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+            </form>
+
+            <!-- Sign Up Form -->
+            <form class="auth-form" id="signupForm">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="signupName" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="signupEmail" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="signupPassword" placeholder="••••••••" required>
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-user-plus"></i>
+                    Create Account
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentUser = null;
+        let isLoggedIn = false;
+
+        // Initialize particles
+        function createParticles() {
+            const particles = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.width = (Math.random() * 10 + 5) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particles.appendChild(particle);
+            }
+        }
+
+        // Auth Functions
+        function openModal(tab) {
+            document.getElementById('authModal').classList.add('active');
+            switchTab(tab);
+        }
+
+        function closeModal() {
+            document.getElementById('authModal').classList.remove('active');
+        }
+
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.auth-tab').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active'));
+            
+            if (tab === 'signin') {
+                document.querySelector('.auth-tab:first-child').classList.add('active');
+                document.getElementById('signinForm').classList.add('active');
+            } else {
+                document.querySelector('.auth-tab:last-child').classList.add('active');
+                document.getElementById('signupForm').classList.add('active');
+            }
+        }
+
+        // Handle sign in
+        document.getElementById('signinForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('signinEmail').value;
+            const password = document.getElementById('signinPassword').value;
+            
+            // Simulate authentication
+            if (email && password) {
+                currentUser = {
+                    name: email.split('@')[0],
+                    email: email
+                };
+                login();
+            }
+        });
+
+        // Handle sign up
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            // Simulate registration
+            if (name && email && password) {
+                currentUser = {
+                    name: name,
+                    email: email
+                };
+                login();
+            }
+        });
+
+        function login() {
+            isLoggedIn = true;
+            closeModal();
+            
+            // Update UI
+            document.getElementById('heroSection').style.display = 'none';
+            document.getElementById('dashboard').classList.add('active');
+            document.getElementById('authButtons').style.display = 'none';
+            document.getElementById('userMenu').style.display = 'flex';
+            document.getElementById('userName').textContent = `Welcome, ${currentUser.name}`;
+            
+            // Update user info
+            document.getElementById('userInfo').innerHTML = `
+                <p><i class="fas fa-user"></i> ${currentUser.name} (${currentUser.email})</p>
+                <p>Account Type: Premium • API Calls Remaining: 950/1000</p>
+            `;
+        }
+
+        function logout() {
+            isLoggedIn = false;
+            currentUser = null;
+            
+            // Reset UI
+            document.getElementById('heroSection').style.display = 'flex';
+            document.getElementById('dashboard').classList.remove('active');
+            document.getElementById('authButtons').style.display = 'flex';
+            document.getElementById('userMenu').style.display = 'none';
+            document.getElementById('resultsSection').classList.remove('show');
+        }
+
+        // Backend integration for prediction
+        document.getElementById('predictionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (!isLoggedIn) {
+                openModal('signin');
+                return;
+            }
+            const button = document.getElementById('predictBtn');
+            const spinner = document.getElementById('loadingSpinner');
+            const results = document.getElementById('resultsSection');
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing Market Data...';
+            spinner.style.display = 'block';
+            results.classList.remove('show');
+
+            // Collect form data
+            const form = document.getElementById('predictionForm');
+            const data = new FormData(form);
+            const payload = Object.fromEntries(data.entries());
+
+            try {
+                const res = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error('Prediction failed');
+                const out = await res.json();
+                document.getElementById('predictedPrice').textContent = `$${out.predicted_price?.toFixed(2) || '0.00'}`;
+                document.getElementById('aiAnalysis').textContent = out.ai_analysis || 'AI analysis generated.';
+                document.getElementById('anomalyDetection').textContent = out.anomaly_explanation || 'No anomaly detected.';
+                document.getElementById('recommendations').textContent = out.recommendations || 'See above for recommendations.';
+                document.getElementById('confidence').textContent = out.confidence || '-';
+                document.getElementById('marketPosition').textContent = out.market_position || '-';
+                document.getElementById('priceRange').textContent = out.price_range || '-';
+                document.getElementById('competitiveIndex').textContent = out.competitive_index || '-';
+                results.classList.add('show');
+                results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (err) {
+                alert('Prediction failed. Please try again.');
+            }
+            spinner.style.display = 'none';
+            button.disabled = false;
+            button.innerHTML = '<i class="fas fa-chart-bar"></i> Predict Price';
+        });
+
+        // Form validation
+        function validateForm() {
+            const required = ['category', 'brand', 'rating', 'reviews'];
+            const isValid = required.every(id => document.getElementById(id).value.trim() !== '');
+            
+            const button = document.getElementById('predictBtn');
+            if (!isValid) {
+                button.style.opacity = '0.6';
+                button.disabled = true;
+            } else {
+                button.style.opacity = '1';
+                button.disabled = false;
+            }
+        }
+
+        // Add validation listeners
+        ['category', 'brand', 'rating', 'reviews'].forEach(id => {
+            document.getElementById(id).addEventListener('input', validateForm);
+            document.getElementById(id).addEventListener('change', validateForm);
+        });
+
+        // Utility functions
+        function scrollToDemo() {
+            if (isLoggedIn) {
+                document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                openModal('signup');
+            }
+        }
+
+        // Close modal on outside click
+        document.getElementById('authModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            validateForm();
+            
+            // Auto-focus first input in active form
+            document.getElementById('signinEmail').focus();
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Demo data for quick testing
+        function loadDemoData() {
+            if (!isLoggedIn) return;
+            
+            document.getElementById('category').value = 'electronics';
+            document.getElementById('brand').value = 'premium';
+            document.getElementById('rating').value = '4.3';
+            document.getElementById('reviews').value = '2847';
+            document.getElementById('competition').value = 'medium';
+            document.getElementById('demand').value = 'trending';
+            document.getElementById('productAge').value = 'recent';
+            document.getElementById('stock').value = 'medium';
+            validateForm();
+        }
+
+        // Add demo button (hidden feature)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'd') {
+                e.preventDefault();
+                loadDemoData();
+            }
+        });
+    </script>
+</body>
+</html>

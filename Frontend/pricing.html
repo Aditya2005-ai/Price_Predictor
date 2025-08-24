@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - PriceSense</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background: #0a0e27; color: #fff; font-family: 'Inter', sans-serif; margin: 0; }
+        .container { max-width: 900px; margin: 3rem auto; padding: 2rem; background: rgba(255,255,255,0.04); border-radius: 20px; }
+        h1 { color: #a18fff; text-align: center; }
+        .pricing-table { display: flex; gap: 2rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap; }
+        .plan { background: rgba(102,126,234,0.08); border-radius: 15px; padding: 2rem; min-width: 250px; box-shadow: 0 2px 8px #0002; text-align: center; }
+        .plan-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 1rem; color: #667eea; }
+        .plan-price { font-size: 2rem; font-weight: 700; margin-bottom: 1rem; }
+        .plan-features { color: #c3c6e4; margin-bottom: 1.5rem; }
+        .plan-btn { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; padding: 0.75rem 2rem; border-radius: 8px; font-size: 1rem; cursor: pointer; }
+        .plan-btn:hover { background: #667eea; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pricing Plans</h1>
+        <div class="pricing-table">
+            <div class="plan">
+                <div class="plan-title">Free</div>
+                <div class="plan-price">$0<span style="font-size:1rem;">/mo</span></div>
+                <div class="plan-features">
+                    <ul style="list-style:none;padding:0;">
+                        <li>Basic Price Predictions</li>
+                        <li>Limited Analytics</li>
+                        <li>Email Support</li>
+                    </ul>
+                </div>
+                <button class="plan-btn">Get Started</button>
+            </div>
+            <div class="plan">
+                <div class="plan-title">Pro</div>
+                <div class="plan-price">$29<span style="font-size:1rem;">/mo</span></div>
+                <div class="plan-features">
+                    <ul style="list-style:none;padding:0;">
+                        <li>Advanced AI Predictions</li>
+                        <li>Full Market Analytics</li>
+                        <li>Priority Support</li>
+                        <li>Access to Dashboard</li>
+                    </ul>
+                </div>
+                <button class="plan-btn">Start Pro</button>
+            </div>
+            <div class="plan">
+                <div class="plan-title">Enterprise</div>
+                <div class="plan-price">Custom</div>
+                <div class="plan-features">
+                    <ul style="list-style:none;padding:0;">
+                        <li>Custom Integrations</li>
+                        <li>Dedicated Analyst</li>
+                        <li>24/7 Support</li>
+                        <li>Team Management</li>
+                    </ul>
+                </div>
+                <button class="plan-btn">Contact Sales</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
